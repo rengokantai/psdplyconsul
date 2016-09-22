@@ -28,3 +28,16 @@ ip = $(ifconfig eth1 | grep 'inet addr' |awk '{print substr($2,6)}')
 consul agent -advertise $ip -config-file /vagrant/common.json -config-file /vagrant/web.service.json &
 ```
 
+run nginx via docker(ckeck prev course 35)
+```
+docker run -d --name web -p 8080:80 --restart unless-stopped -v /home/vagrant/ip.html:/usr/share/nginx.html/ip.html:ro nginx
+```
+
+lb:
+```
+/vagrant/provision/setup.lb.sh
+/vagrant/provision/install.consul-template.sh
+ip = $(ifconfig eth1 | grep 'inet addr' |awk '{print substr($2,6)}')
+consul agent -advertise $ip -config-file /vagrant/common.json -config-file /vagrant/lb.service.json &
+consul-template -config /vagrant/provision/lb.consul-template.hcl &
+```
